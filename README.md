@@ -18,10 +18,10 @@ Resumes both when distance exceeds threshold
 ✅ CSV logging of telemetry, alerts, pause, and resume events
 
 
-📂 Project Structure
+
 satnet_can_plus/
 ├── tle_data.txt              # TLEs for all satellites
-├── simulate_dynamic.py       # Main simulation script with smart collision response
+├── simulate_dynamic.py       # Main simulation script
 ├── comms.py                  # UDP communication with priority queue
 ├── collision_check.py        # Collision detection logic
 ├── routing.py                # Network graph + routing path
@@ -29,6 +29,7 @@ satnet_can_plus/
 ├── visualize_topology.py     # Visualize network using networkx
 ├── events_log.csv            # Logs all events (generated at runtime)
 └── README.md
+
 
 
 🛠️ Requirements
