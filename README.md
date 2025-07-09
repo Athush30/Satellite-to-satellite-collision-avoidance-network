@@ -24,7 +24,7 @@ This project simulates a real-time **collision detection and alert system** for 
 ## 📂 Project Structure
 
 ```
-satnet_can_plus/
+project/
 ├── tle_data.txt              # TLEs for all satellites
 ├── simulate.py       # Main simulation script with smart collision response
 ├── comms.py                  # UDP communication with priority queue
@@ -102,6 +102,7 @@ python visualize_topology.py
 [LOG] SAT-B sending telemetry...
 [LOG] SAT-A resumed — safe distance now 11.4 km
 ```
+Can view 3 type of tle_data and their output in test file
 
 Also saved in:
 
