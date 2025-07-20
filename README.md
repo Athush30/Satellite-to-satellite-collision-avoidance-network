@@ -1,131 +1,130 @@
 # 🛰️ SatNet-CAN+: Satellite-to-Satellite Collision Alert Network (Python Simulation)
 
-This project simulates a real-time **collision detection and alert system** for a constellation of satellites using **TLE orbital data**, priority-based inter-satellite communication, and routing over a dynamic network. It's built entirely in Python and designed to support any number of satellites. The updated version includes smart satellite response to collision risks, where one satellite pauses while the other continues moving, resuming when the risk is cleared.
+
+**Sat-CAN+** is a Python-based real-time simulation system that models inter-satellite communication for **collision detection and avoidance** using Two-Line Element (TLE) data, orbital dynamics, and UDP-based message routing. It mimics how satellites in a constellation can autonomously avoid potential collisions by exchanging telemetry and applying delta-v maneuvers.
 
 ---
 
-## 🚀 Features
+## 🚀 Project Features
 
-- ✅ Real-time orbit prediction using TLE data via Skyfield  
-- ✅ Collision detection between all satellite pairs  
-- ✅ Smart collision response:  
-  - Pauses one satellite (lower name alphabetically) during collision risk  
-  - Allows the other satellite to continue moving  
-  - Resumes both when distance exceeds threshold  
-
-- ✅ Priority-based UDP communication (alerts > telemetry)  
-- ✅ Satellite-to-satellite alert broadcasting  
-- ✅ Network routing simulation using networkx  
-- ✅ Visualization of satellite communication topology  
-- ✅ CSV logging of telemetry, alerts, pause, and resume events  
+- 🌍 **TLE-based Orbit Simulation** using [Skyfield](https://rhodesmill.org/skyfield/)
+- 📡 **Inter-Satellite Communication** with UDP Sockets and Priority Messaging
+- ⚠️ **Collision Detection** using real-time 3D position data
+- 🛡️ **Delta-V Maneuver Execution** for avoidance and orbit restoration
+- 🛰️ **Telemetry Exchange** between all satellites
+- 🧠 **Graph-based Routing Engine** using NetworkX
+- 📓 **Logging System** for alerts, telemetry, and actions
 
 ---
 
-## 📂 Project Structure
+## 📂 Repository Structure
 
 ```
-project/
-├── tle_data.txt              # TLEs for all satellites
-├── simulate.py       # Main simulation script with smart collision response
-├── comms.py                  # UDP communication with priority queue
-├── collision_check.py        # Collision detection logic
-├── routing.py                # Network graph + routing path
-├── logger.py                 # CSV logger
-├── visualize_topology.py     # Visualize network using networkx
-├── events_log.csv            # Logs all events (generated at runtime)
-└── README.md
+sat-can-plus/
+│
+├── simulate.py              # Main simulation runner
+├── routing.py               # Network graph and routing logic
+├── collision_check.py       # Collision detection logic
+├── comms.py                 # Communication system (UDP)
+├── logger.py                # Event logging utility
+├── tle_data.txt             # TLE data for satellites
+└── README.md                # This file
 ```
 
 ---
 
-## 🛠️ Requirements
+## 🔧 How It Works
 
-Install dependencies using:
+1. **Load TLEs**: Parses and initializes satellite orbits from `tle_data.txt`.
+2. **Construct Network**: Builds a full-mesh communication graph using `NetworkX`.
+3. **Detect Collisions**: Continuously checks distances between satellites.
+4. **Avoid Collisions**: Applies small velocity changes (Δv) to avoid collisions.
+5. **Communicate**: Satellites send warnings, telemetry, and status over UDP.
+6. **Restore Orbits**: Reverts to original TLEs after safe conditions are met.
+
+---
+
+## 📌 Prerequisites
+
+- Python 3.8+
+- Install dependencies:
 
 ```bash
-pip install -r requirements.txt
-```
-
-**requirements.txt:**
-
-```
-skyfield
-numpy
-networkx
-matplotlib
+pip install skyfield numpy networkx
 ```
 
 ---
 
-## 🛰️ Input: TLE Data
+## 🛠️ Running the Simulation
 
-Your `tle_data.txt` must follow this format (repeat for N satellites):
+1. Place your TLE data in `tle_data.txt` with the format:
+    ```
+    SAT-1
+    1 25544U 98067A   24190.12345678  .00001234  00000-0  12345-4 0  9991
+    2 25544  51.6432 123.4567 0001234 123.4567 234.5678 15.54321098765432
+    SAT-2
+    ...
+    ```
 
-```
-SAT-A
-1 <TLE line 1>
-2 <TLE line 2>
-SAT-B
-1 <TLE line 1>
-2 <TLE line 2>
-...
-```
-
-✅ Use valid or custom TLEs to simulate collisions. A sample TLE file that triggers a collision is included.
-
----
-
-## ▶️ How to Run
-
-To start the simulation with smart collision response:
-
+2. Run the main script:
 ```bash
 python simulate.py
 ```
 
 ---
 
-## 🔁 Optional: Visualize Satellite Network
+## 📊 Example Output
 
-```bash
-python visualize_topology.py
+```
+Loaded satellite: SAT-1 with TLE: ...
+Assigned ports: {'SAT-1': 9000, 'SAT-2': 10000, ...}
+Collision check between SAT-1 and SAT-2: Distance = 0.95 km, Risk = True
+[RECEIVED from ... for SAT-2]: WARNING: COLLISION RISK! SAT-1 <-> SAT-2 | Distance = 0.95 km
+[Action] SAT-1: Applied Δv: [0.007 0.002 -0.001] m/s
 ```
 
 ---
 
-## 📈 Output Example
+## 📁 Modules Explained
 
-```
-🛰️ Satellite Simulation (Pause One, Resume Both When Safe) Started
-[ALERT] ⚠️ COLLISION RISK! SAT-A ↔ SAT-B | Distance = 3.2 km
-[LOG] SAT-A paused due to collision risk
-[LOG] SAT-B sending telemetry...
-[LOG] SAT-A resumed — safe distance now 11.4 km
-```
-Can view 3 type of tle_data and their output in test file
+- **simulate.py**  
+  Main simulation loop, orbit restoration, maneuver logic
 
-Also saved in:
+- **routing.py**  
+  Builds a graph of all satellite connections
 
-- `events_log.csv` — timestamped log of telemetry, alerts, pause, and resume events
+- **collision_check.py**  
+  Detects collision risks based on positions
 
----
+- **comms.py**  
+  Implements UDP communication between satellites
 
-## 🔐 Concepts Demonstrated
-
-- Orbital mechanics using TLEs  
-- ECI coordinate simulation  
-- Proximity detection and threat estimation  
-- Smart collision avoidance (pause/resume logic)  
-- UDP-based communication model  
-- Message prioritization and custom routing  
-- Realistic satellite networking behavior  
+- **logger.py** *(optional)*  
+  Can be extended to log to file or cloud
 
 ---
 
-## 📚 References
+## 🧪 Test It Yourself
 
-- [Skyfield Documentation](https://rhodesmill.org/skyfield/)  
-- [Celestrak TLE Sources](https://celestrak.com/NORAD/elements/)  
-- NASA Space Debris & Collision Avoidance  
+You can simulate multiple satellites by editing the `tle_data.txt` file with real or synthetic TLEs. The system automatically detects risk and executes maneuvers in real-time.
 
 ---
+
+## 🔒 Security Note
+
+This simulation uses local UDP communication and does not reflect space-grade encryption or actual satellite protocols. It is intended for educational and research purposes only.
+
+---
+
+## 📜 License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
+
+---
+
+## 🌠 Future Work
+
+- Add orbital propagation using SGP4/SGP8 integrators  
+- Integrate ML models for intelligent maneuver decisions  
+- Visualize orbits and network using 3D plotting tools
