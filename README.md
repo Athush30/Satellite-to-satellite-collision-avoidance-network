@@ -20,7 +20,7 @@
 ## 📂 Repository Structure
 
 ```
-sat-can-plus/
+sat-can+/project
 │
 ├── simulate.py              # Main simulation runner
 ├── routing.py               # Network graph and routing logic
