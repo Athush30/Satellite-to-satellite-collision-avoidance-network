@@ -27,8 +27,8 @@ sat-can+/project
 ├── collision_check.py       # Collision detection logic
 ├── comms.py                 # Communication system (UDP)
 ├── logger.py                # Event logging utility
-├── tle_data.txt             # TLE data for satellites
-└── README.md                # This file
+└──tle_data.txt             # TLE data for satellites
+ 
 ```
 
 ---
