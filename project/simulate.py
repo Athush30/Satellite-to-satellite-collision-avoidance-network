@@ -13,8 +13,13 @@ from datetime import UTC
 ts = load.timescale()
 
 # Load and validate TLEs
-with open("C:/Users/thusa.THUSA/Downloads/New folder (3)/tle_data.txt") as f:
+with open("C:/Users/thusa.THUSA/Downloads/New folder (6)/tle_data.txt") as f:
     lines = f.read().splitlines()
+
+
+def text_to_bits(text):
+        return ''.join(format(ord(c), '08b') for c in text)
+
 
 satellites = {}
 original_states = {}  # Store original velocity and orbital elements
@@ -112,6 +117,13 @@ while True:
                     send_message(1, msg, "127.0.0.1", sat_ports[name2])
                     log_event("Alert", name1, msg)
 
+                    alert_bits = text_to_bits(msg)
+                    print(msg)
+                    print(alert_bits)
+                    with open('C:/Users/thusa.THUSA/Downloads/New folder (6)/alert_bits.txt', 'w') as f:
+                        f.write(alert_bits)
+                    print('WRITTEN ON ALERT_BITTS.....................................................')
+
                     # Apply maneuver to one satellite (lower name)
                     maneuver_sat = min(name1, name2)
                     rel_pos = pos2 - pos1 if maneuver_sat == name1 else pos1 - pos2
@@ -119,7 +131,7 @@ while True:
                     dv = 0.01 * dv_direction  # 1 cm/s in m/s
                     t_start = t
                     pos_start = satellites[maneuver_sat].at(t_start).position.km
-                    vel_start = asatellites[maneuver_sat].at(t_start).velocity.km_per_s
+                    vel_start = satellites[maneuver_sat].at(t_start).velocity.km_per_s
                     maneuver_states[maneuver_sat] = {
                         'start_time': t_start,
                         'dv': dv,
@@ -134,6 +146,10 @@ while True:
             else:
                 if pair_key in active_alerts:
                     # Check if safe to restore orbit
+                    alert_bits = text_to_bits("Safe")
+                    with open('C:/Users/thusa.THUSA/Downloads/New folder (6)/alert_bits.txt', 'w') as f:
+                        f.write(alert_bits)
+                    print('WRITTEN ON ALERT_BITTS.....................................................')
                     log_event("Safe", name1, f"Safe distance with {name2} = {distance:.2f} km")
                     log_event("Safe", name2, f"Safe distance with {name1} = {distance:.2f} km")
                     active_alerts.remove(pair_key)
